@@ -5,9 +5,8 @@ from configparser import ConfigParser
 
 config = ConfigParser()
 
-config.read('config.ini',encoding='utf-8')
-print(config['user']['username'])
-data = {
-    'user':'wang.junlin'
-}
-print(data['user'])
+config.read('config.ini', encoding='utf-8')
+print(type(config['user']['username']))
+aa = config['filter']['ExportJirabug']
+print(aa)
+print(type(aa))
