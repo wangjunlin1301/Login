@@ -7,6 +7,6 @@ config = ConfigParser()
 
 config.read('config.ini', encoding='utf-8')
 print(type(config['user']['username']))
-aa = config['filter']['ExportJirabug']
+aa = config['Newpath']['ExcelName']
 print(aa)
 print(type(aa))
