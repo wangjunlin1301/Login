@@ -19,10 +19,12 @@ Friday_format = Friday.strftime('%Y-%m-%d')
 today = datetime.today()
 today_format = today.strftime('%Y-%m-%d')
 
-todayfile = 'D:\desktop/csv/%sCaseID.csv' % today_format
-yesterdayfile = 'D:\desktop/csv/%sCaseID.csv' % yesterday_format
-Fridayfile = 'D:\desktop/csv/%sCaseID.csv' % Friday_format
-Stadayfile = 'D:\desktop/csv/%sCaseID.csv' % Staday_format
+Csvpath = config['Newpath']['csvpath']
+Excelpath = config['Newpath']['excelpath']
+todayfile = Csvpath + '/' + today_format + 'CaseID.csv'
+yesterdayfile = Csvpath + '/' + yesterday_format + 'CaseID.csv'
+Fridayfile = Csvpath + '/' + Friday_format + 'CaseID.csv'
+Stadayfile = Csvpath + '/' + Staday_format + 'CaseID.csv'
 milestonenumber = config['url']['MileStoneNumber']
 
 headers = {
@@ -71,14 +73,20 @@ def FilterStatus(file, value):
 
 
 def TodayNewFail():
+    todaydata = FilterStatus(todayfile, 'Failed')
+
     try:
-        todaydata = FilterStatus(todayfile, 'Failed')
+        print(666)
         if os.path.exists(yesterdayfile):
             yesterdaydata = FilterStatus(yesterdayfile, 'Failed')
+            print(667)
         elif os.path.exists(Stadayfile):
             yesterdaydata = FilterStatus(Stadayfile, 'Failed')
+            print(668)
         elif os.path.exists(Fridayfile):
             yesterdaydata = FilterStatus(Fridayfile, 'Failed')
+        else:
+            yesterdaydata = todaydata
         FinalData = pd.merge(yesterdaydata,
                              todaydata,
                              on=['ID', 'Case ID', 'Defects', 'Status'],
@@ -93,9 +101,10 @@ def TodayNewFail():
             elif i == 'both':
                 FinalData.at[j, 'New'] = 'Old'
             j += 1
-        Excel = pd.ExcelWriter("D:\desktop/2020May/Testcase.xlsx")
+        Excel = pd.ExcelWriter("%s/Testcase.xlsx" % Excelpath)
         FinalData.to_excel(Excel, index=True)
         Excel.save()
+        print("Testcases saved in " + Excelpath)
     except:
         print('The compared file is not existed, please confirm it!')
 
@@ -168,4 +177,3 @@ def ExportTestcases():
 
 
 # ExportTestcases()
-# Comparecases()

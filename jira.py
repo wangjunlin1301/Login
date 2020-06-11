@@ -39,6 +39,7 @@ def jira_request(method, url, data=None, info=None):
 
 
 def saveXlsxOfBug():
+    getBugCsvFile()
     try:
         #回归开始以来的bug
         trans1 = pd.read_csv(Csvpath + "/%s.csv" % Regression,
@@ -48,7 +49,7 @@ def saveXlsxOfBug():
         New1.save()
         print("Updated daily bug!")
     except:
-        pass
+        print('Wrong!')
     try:
         #每天的bug 存储
         trans = pd.read_csv(Csvpath + "/%sdailyissue.csv" % filedate,
@@ -72,7 +73,7 @@ def getBugCsvFile():
     print(t.status_code)
 
     # 获取
-    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=created >=" + currentdate + JiraQuery
+    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=" + JiraQuery  #created >=" + currentdate + JiraQuery
     GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=Type+=+Bug+AND+labels+=+7.26Regression+ORDER+BY+created+ASC"
     #GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=+(+labels+=+7.26Regression+OR+'Found in Build'+~+'7.26*'+)+AND+issuetype+in+(+Bug+,+'Internal Bug'+)+AND+created+>=+2020-03-08+AND+status+not+in+(Closed)+AND+labels+not+in+(product.not.for.7.26)"
     result = jira_request("GET", url=GetFileUrl)
@@ -83,7 +84,7 @@ def getBugCsvFile():
     with open(Csvpath + '/%s.csv' % Regression, 'wb') as f:
         for i in result1.iter_content():
             f.write(i)
-    Comparecases()
+    # Comparecases()
 
 
 saveXlsxOfBug()
