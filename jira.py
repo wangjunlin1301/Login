@@ -22,6 +22,7 @@ Csvpath = config['Newpath']['csvpath']
 Excelpath = config['Newpath']['excelpath']
 Regression = config['filter']['RegressionName']
 JiraQuery = config['filter']['ExportJirabug']
+JiraQueryAll = config['filter']['ExportJirabugAll']
 print(currentdate)
 
 
@@ -70,11 +71,12 @@ def getBugCsvFile():
     }
 
     t = jira_request('POST', LoginJiraUrl, data=LoginData)
-    print(t.status_code)
+    if t.status_code == '200':
+        print('Login Success!')
 
     # 获取
-    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=" + JiraQuery  #created >=" + currentdate + JiraQuery
-    GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=Type+=+Bug+AND+labels+=+7.26Regression+ORDER+BY+created+ASC"
+    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery= created >= " + currentdate + JiraQuery
+    GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=" + JiraQueryAll
     #GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=+(+labels+=+7.26Regression+OR+'Found in Build'+~+'7.26*'+)+AND+issuetype+in+(+Bug+,+'Internal Bug'+)+AND+created+>=+2020-03-08+AND+status+not+in+(Closed)+AND+labels+not+in+(product.not.for.7.26)"
     result = jira_request("GET", url=GetFileUrl)
     result1 = jira_request("GET", url=GetbugUrlutil)
@@ -84,7 +86,9 @@ def getBugCsvFile():
     with open(Csvpath + '/%s.csv' % Regression, 'wb') as f:
         for i in result1.iter_content():
             f.write(i)
-    # Comparecases()
+    print('Daliy Issue Updating!')
+    Comparecases()
 
 
-saveXlsxOfBug()
+if __name__ == "__main__":
+    saveXlsxOfBug()

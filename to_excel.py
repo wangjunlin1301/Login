@@ -76,7 +76,6 @@ def TodayNewFail():
     todaydata = FilterStatus(todayfile, 'Failed')
 
     try:
-        print(666)
         if os.path.exists(yesterdayfile):
             yesterdaydata = FilterStatus(yesterdayfile, 'Failed')
             print(667)
@@ -140,9 +139,8 @@ def Comparecases():
     }
 
     ExportCsvUrl = 'https://titx02.blackline.corp/index.php?/milestones/export_csv/%s' % milestonenumber
-    print(ExportCsvUrl)
     export = TestRail_request("POST", ExportCsvUrl, data=data)
-    print("downloading....")
+    print("Testcases Downloading!")
 
     #写数据
     with open("D:\desktop/csv/%sCaseID.csv" % today_format, 'wb') as f:
@@ -174,6 +172,3 @@ def ExportTestcases():
         for i in export.iter_content():
             f.write(i)
     Csv2Excel('../CountCase.csv', '../CountCase.xlsx')
-
-
-# ExportTestcases()

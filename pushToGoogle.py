@@ -16,8 +16,8 @@ googleauth = pygsheets.authorize(
 
 sheetName = [
     'Accounts', 'CIM', 'Journals', 'Matching', 'Intercompany', 'Tasks',
-    'Variance', 'Compliance', 'RAD', 'Crusaders', 'RFC', 'StarterDB', 'System',
-    'Users', 'Daily Reconciliations', 'BLJ'
+    'Variance', 'Compliance', 'RAD', 'RFC', 'StarterDB', 'System', 'Users',
+    'Daily Reconciliations', 'BLJ'
 ]
 
 #open the google spreadsheet ('pysheeetsTest' exists)
