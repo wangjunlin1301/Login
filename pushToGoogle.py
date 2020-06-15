@@ -5,10 +5,13 @@ import pandas as pd
 from getCaseNumber import getTotalNumberEachModule
 from configparser import ConfigParser
 from to_excel import ExportTestcases
+import time
 
 config = ConfigParser()
 config.read('config.ini', encoding='utf-8')
 GoogleName = config['Newpath']['ExcelName']
+Excelpath = config['Newpath']['excelpath']
+filedate = str(time.strftime("%Y-%m-%d"))
 
 # Google Api认证
 googleauth = pygsheets.authorize(
@@ -20,6 +23,8 @@ sheetName = [
     'Daily Reconciliations', 'BLJ'
 ]
 
+# DaliyIssues 文件
+DaliyIssueFile = Excelpath + "/%sdailyissue.xlsx" % filedate
 #open the google spreadsheet ('pysheeetsTest' exists)
 sh = googleauth.open(GoogleName)
 
@@ -63,6 +68,23 @@ def Push(StatusDict, PriorityDict):
         print(StatusDict['Module'] + ' is not exised!')
 
 
+def PushDaliyIssues():
+    DaliyIssuedf = pd.read_excel(DaliyIssueFile, index_col=0, skiprows=1)
+    colsList = DaliyIssuedf.columns.values.tolist()
+    DaliyIssuedf = DaliyIssuedf[[
+        colsList[0], colsList[1], colsList[2], colsList[3], colsList[7],
+        colsList[5], colsList[6], colsList[4]
+    ]]
+    try:
+        Workspace = sh.worksheet_by_title('DaliyIssues')
+        Workspace.set_dataframe(DaliyIssuedf, (2, 2))
+        print("aaa")
+    except:
+        print('表格错误！')
+
+
 if __name__ == "__main__":
-    ExportTestcases()
+    # 上传日常bug
+    PushDaliyIssues()
+    # 更新到GoogleSheets
     Upload()

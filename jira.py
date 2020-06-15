@@ -4,7 +4,7 @@ import time
 import pandas as pd
 # from login import to_excel
 from configparser import ConfigParser
-from to_excel import Comparecases
+from to_excel import Comparecases, ExportTestcases
 
 config = ConfigParser()
 config.read(r'config.ini', encoding='utf-8')
@@ -44,23 +44,24 @@ def saveXlsxOfBug():
     try:
         #回归开始以来的bug
         trans1 = pd.read_csv(Csvpath + "/%s.csv" % Regression,
-                             usecols=[1, 3, 5, 6, 13, 12, 9])
+                             usecols=[1, 3, 5, 6, 13, 12, 9, 14])
         New1 = pd.ExcelWriter(Excelpath + "/%s.xlsx" % Regression)
         trans1.to_excel(New1, index=True)
         New1.save()
         print("Updated daily bug!")
     except:
-        print('Wrong!')
+        print('SaveXlsxOfBug Wrong!')
     try:
         #每天的bug 存储
         trans = pd.read_csv(Csvpath + "/%sdailyissue.csv" % filedate,
-                            usecols=[1, 3, 5, 6, 13, 12, 9])
+                            usecols=[1, 3, 5, 6, 13, 12, 9, 14])
         New = pd.ExcelWriter(Excelpath + "/%sdailyissue.xlsx" % filedate)
         trans.to_excel(New, index=True)
         New.save()
 
     except:
         print("No new bug!")
+    print("文件保存成功！请继续执行pushToGoogle.py！")
 
 
 def getBugCsvFile():
@@ -87,7 +88,10 @@ def getBugCsvFile():
         for i in result1.iter_content():
             f.write(i)
     print('Daliy Issue Updating!')
+    # 筛选出新失败的cases
     Comparecases()
+    # 导出cases
+    ExportTestcases()
 
 
 if __name__ == "__main__":

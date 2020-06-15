@@ -149,7 +149,6 @@ def Comparecases():
 
     # #转换以及清洗数据
     TodayNewFail()
-    input("File created!Please hit Enter to quit.")
 
 
 def ExportTestcases():
