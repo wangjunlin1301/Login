@@ -69,16 +69,17 @@ def Push(StatusDict, PriorityDict):
 
 
 def PushDaliyIssues():
-    DaliyIssuedf = pd.read_excel(DaliyIssueFile, index_col=0, skiprows=1)
-    colsList = DaliyIssuedf.columns.values.tolist()
-    DaliyIssuedf = DaliyIssuedf[[
-        colsList[0], colsList[1], colsList[2], colsList[3], colsList[7],
-        colsList[5], colsList[6], colsList[4]
-    ]]
     try:
+        DaliyIssuedf = pd.read_excel(DaliyIssueFile, index_col=0, skiprows=1)
+        colsList = DaliyIssuedf.columns.values.tolist()
+        DaliyIssuedf = DaliyIssuedf[[
+            colsList[0], colsList[1], colsList[2], colsList[3], colsList[6],
+            colsList[5], colsList[4]
+        ]]
+
         Workspace = sh.worksheet_by_title('DaliyIssues')
         Workspace.set_dataframe(DaliyIssuedf, (2, 2))
-        print("aaa")
+        print("Push Done")
     except:
         print('表格错误！')
 
