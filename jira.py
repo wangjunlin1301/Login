@@ -48,16 +48,17 @@ def saveXlsxOfBug():
         New1 = pd.ExcelWriter(Excelpath + "/%s.xlsx" % Regression)
         trans1.to_excel(New1, index=True)
         New1.save()
-        print("Updated daily bug!")
+        print("所有的bug保存!")
     except:
         print('SaveXlsxOfBug Wrong!')
     try:
         #每天的bug 存储
         trans = pd.read_csv(Csvpath + "/%sdailyissue.csv" % filedate,
-                            usecols=[1, 3, 5, 6, 13, 12, 9, 14])
+                            usecols=[1, 3, 5, 6, 12, 13])
         New = pd.ExcelWriter(Excelpath + "/%sdailyissue.xlsx" % filedate)
         trans.to_excel(New, index=True)
         New.save()
+        print("当天bug保存！")
 
     except:
         print("No new bug!")

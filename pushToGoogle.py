@@ -11,7 +11,7 @@ config = ConfigParser()
 config.read('config.ini', encoding='utf-8')
 GoogleName = config['Newpath']['ExcelName']
 Excelpath = config['Newpath']['excelpath']
-filedate = str(time.strftime("%Y-%m-%d"))
+Regression = config['filter']['RegressionName']
 
 # Google Api认证
 googleauth = pygsheets.authorize(
@@ -24,7 +24,7 @@ sheetName = [
 ]
 
 # DaliyIssues 文件
-DaliyIssueFile = Excelpath + "/%sdailyissue.xlsx" % filedate
+DaliyIssueFile = Excelpath + "/%s.xlsx" % Regression
 #open the google spreadsheet ('pysheeetsTest' exists)
 sh = googleauth.open(GoogleName)
 
@@ -73,8 +73,8 @@ def PushDaliyIssues():
         DaliyIssuedf = pd.read_excel(DaliyIssueFile, index_col=0, skiprows=1)
         colsList = DaliyIssuedf.columns.values.tolist()
         DaliyIssuedf = DaliyIssuedf[[
-            colsList[0], colsList[1], colsList[2], colsList[3], colsList[6],
-            colsList[5], colsList[4]
+            colsList[0], colsList[1], colsList[2], colsList[3], colsList[7],
+            colsList[5], colsList[4], colsList[6]
         ]]
 
         Workspace = sh.worksheet_by_title('DaliyIssues')
