@@ -78,14 +78,16 @@ def TodayNewFail():
     try:
         if os.path.exists(yesterdayfile):
             yesterdaydata = FilterStatus(yesterdayfile, 'Failed')
-            print(667)
+            print('和昨天的比较')
         elif os.path.exists(Stadayfile):
             yesterdaydata = FilterStatus(Stadayfile, 'Failed')
-            print(668)
+            print('和前天的比较')
         elif os.path.exists(Fridayfile):
             yesterdaydata = FilterStatus(Fridayfile, 'Failed')
+            print('和大前天比较')
         else:
             yesterdaydata = todaydata
+            print('没有可比较的文件，只筛选失败的cases')
         FinalData = pd.merge(yesterdaydata,
                              todaydata,
                              on=['ID', 'Case ID', 'Defects', 'Status'],

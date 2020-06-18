@@ -82,7 +82,7 @@ def getBugCsvFile():
     #GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=+(+labels+=+7.26Regression+OR+'Found in Build'+~+'7.26*'+)+AND+issuetype+in+(+Bug+,+'Internal Bug'+)+AND+created+>=+2020-03-08+AND+status+not+in+(Closed)+AND+labels+not+in+(product.not.for.7.26)"
     result = jira_request("GET", url=GetFileUrl)
     result1 = jira_request("GET", url=GetbugUrlutil)
-    print(GetFileUrl)
+    # print(GetFileUrl)
     with open(Csvpath + '/%sdailyissue.csv' % filedate, 'wb') as f:
         for i in result.iter_content():
             f.write(i)
