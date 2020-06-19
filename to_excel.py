@@ -49,7 +49,7 @@ def Csv2Excel1():
     trans = pd.read_csv("D:\desktop/2020May/%sdailyissue.csv" % filedate,
                         usecols=[1, 11])
     New = pd.ExcelWriter("D:\desktop/2020May/%sdailyissue.xlsx" % filedate,
-                         usecols=[1, 11])
+                         usecols=[1, 11])  # pylint: disable=abstract-class-instantiated
     trans.to_excel(New, index=False)
     New.save()
 
