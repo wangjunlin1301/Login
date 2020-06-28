@@ -14,10 +14,13 @@ yesterday = datetime.today() + timedelta(-1)
 yesterday_format = yesterday.strftime('%Y-%m-%d')
 Staday = datetime.today() + timedelta(-2)
 Staday_format = Staday.strftime('%Y-%m-%d')
+Stadayy = datetime.today() + timedelta(-4)
+Stadayy_format = Stadayy.strftime('%Y-%m-%d')
 Friday = datetime.today() + timedelta(-3)
 Friday_format = Friday.strftime('%Y-%m-%d')
 today = datetime.today()
 today_format = today.strftime('%Y-%m-%d')
+
 
 Csvpath = config['Newpath']['csvpath']
 Excelpath = config['Newpath']['excelpath']
@@ -25,6 +28,7 @@ todayfile = Csvpath + '/' + today_format + 'CaseID.csv'
 yesterdayfile = Csvpath + '/' + yesterday_format + 'CaseID.csv'
 Fridayfile = Csvpath + '/' + Friday_format + 'CaseID.csv'
 Stadayfile = Csvpath + '/' + Staday_format + 'CaseID.csv'
+Thrusdayfile = Csvpath + '/' + Stadayy_format + 'CaseID.csv'
 milestonenumber = config['url']['MileStoneNumber']
 
 headers = {
@@ -37,8 +41,8 @@ requests.urllib3.disable_warnings()
 
 def Csv2Excel(csv_name, Excel_name):
     load = os.getcwd() + '\/'
-    trans = pd.read_csv(load[:-1] + csv_name)
-    New = pd.ExcelWriter(load[:-1] + Excel_name)
+    trans = pd.read_csv(csv_name)
+    New = pd.ExcelWriter(Excel_name)
     trans.to_excel(New, index=False)
     New.save()
 
@@ -67,7 +71,7 @@ def TestRail_request(method, url, data=None, info=None):
 
 
 def FilterStatus(file, value):
-    csv1 = pd.read_csv(file, encoding='gb18030')
+    csv1 = pd.read_csv(file, encoding='utf-8')
     csv2 = csv1[(csv1.Status == value)]
     return csv2
 
@@ -85,6 +89,9 @@ def TodayNewFail():
         elif os.path.exists(Fridayfile):
             yesterdaydata = FilterStatus(Fridayfile, 'Failed')
             print('和大前天比较')
+        elif os.path.exists(Thrusdayfile):
+            yesterdaydata = FilterStatus(Thrusdayfile,'Failed')
+            print('和前前天比较')
         else:
             yesterdaydata = todaydata
             print('没有可比较的文件，只筛选失败的cases')
@@ -103,6 +110,7 @@ def TodayNewFail():
                 FinalData.at[j, 'New'] = 'Old'
             j += 1
         Excel = pd.ExcelWriter("%s/Testcase.xlsx" % Excelpath)
+        FinalData.index = FinalData.index+1
         FinalData.to_excel(Excel, index=True)
         Excel.save()
         print("Testcases saved in " + Excelpath)
@@ -145,7 +153,7 @@ def Comparecases():
     print("Testcases Downloading!")
 
     #写数据
-    with open("D:\desktop/csv/%sCaseID.csv" % today_format, 'wb') as f:
+    with open(Csvpath+"/%sCaseID.csv" % today_format, 'wb') as f:
         for i in export.iter_content():
             f.write(i)
 
