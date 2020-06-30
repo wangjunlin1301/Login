@@ -71,10 +71,8 @@ def TestRail_request(method, url, data=None, info=None):
 
 
 def FilterStatus(file, value):
-    csv1 = pd.read_csv(file, encoding='utf-8')
-    csv2 = csv1[(csv1.Status == value)]
-    return csv2
-
+    csv1 = pd.read_csv(file,encoding='utf-8')
+    return  csv1[csv1['Status']==value]
 
 def TodayNewFail():
     todaydata = FilterStatus(todayfile, 'Failed')
@@ -97,17 +95,17 @@ def TodayNewFail():
             print('没有可比较的文件，只筛选失败的cases')
         FinalData = pd.merge(yesterdaydata,
                              todaydata,
-                             on=['ID', 'Case ID', 'Defects', 'Status'],
+                             on=['ID', 'Case ID', 'Defects', 'Status','Tested On'],
                              how='right',
-                             indicator='New')
-        FinalData.New = FinalData.New.cat.set_categories(
-            ['Old', 'New', 'right_only', 'both'])
+                             indicator='Yes')
+        FinalData.Yes = FinalData.Yes.cat.set_categories(
+            ['No', 'Yes', 'right_only', 'both'])
         j = 0
-        for i in FinalData.New:
+        for i in FinalData.Yes:
             if i == 'right_only':
-                FinalData.at[j, 'New'] = 'New'
+                FinalData.at[j, 'Yes'] = 'Yes'
             elif i == 'both':
-                FinalData.at[j, 'New'] = 'Old'
+                FinalData.at[j, 'Yes'] = 'No'
             j += 1
         Excel = pd.ExcelWriter("%s/Testcase.xlsx" % Excelpath)
         FinalData.index = FinalData.index+1
@@ -141,7 +139,7 @@ def Comparecases():
     # 导出文件 以及需要的数据
     data = {
         'columns':
-        'tests:id,tests:original_case_id,tests:defects,tests:status_id',
+        'tests:id,tests:original_case_id,tests:defects,tests:status_id,tests:tested_on',
         'layout': 'tests',
         'separator_hint': '1',
         'format': 'csv',
@@ -159,7 +157,6 @@ def Comparecases():
 
     # #转换以及清洗数据
     TodayNewFail()
-
 
 def ExportTestcases():
     #进如Testrail，获取token

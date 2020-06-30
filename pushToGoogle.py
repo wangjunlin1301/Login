@@ -2,7 +2,7 @@
 
 import pygsheets
 import pandas as pd
-from getCaseNumber import getTotalNumberEachModule
+from getCaseNumber import getTotalNumberEachModule,getTicketnumber
 from configparser import ConfigParser
 from to_excel import ExportTestcases
 import time
@@ -38,6 +38,16 @@ def Upload():
         Push(StatusDict, PriorityDict)
 
 
+def updateGooglesheet():
+    try:
+        Dictlist = getTicketnumber()
+        Workspace = sh.worksheet_by_title('Tables')
+        Currentfixdf = pd.DataFrame(columns = [v for k,v in Dictlist[0].items()])
+        Nofixversiondf = pd.DataFrame(columns = [i for j,i in Dictlist[1].items()])
+        Workspace.set_dataframe(Currentfixdf, (117, 3))
+        Workspace.set_dataframe(Nofixversiondf, (118, 3))
+    except:
+        print('something wrong, please contact author!')
 #select the first sheet
 def Push(StatusDict, PriorityDict):
 
@@ -96,8 +106,9 @@ def PushDaliyIssues():
 
 
 if __name__ == "__main__":
+    updateGooglesheet()    
     # 上传日常bug
-    PushDaliyIssues()
-    PushTestcases()
-    # 更新到GoogleSheets
-    Upload()
+    # PushDaliyIssues()
+    # PushTestcases()
+    # # 更新到GoogleSheets
+    # Upload()
