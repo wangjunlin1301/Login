@@ -15,6 +15,10 @@ headers = {
 session = requests.session()
 session.keep_alive = False
 requests.urllib3.disable_warnings()
+LoginData = {
+        'os_username': config['user']['username'],
+        'os_password': config['user']['password']
+}
 
 currentdate = str(time.strftime("%Y-%m-%d"))
 filedate = str(time.strftime("%Y-%m-%d"))
@@ -23,6 +27,7 @@ Excelpath = config['Newpath']['excelpath']
 Regression = config['filter']['RegressionName']
 JiraQuery = config['filter']['ExportJirabug']
 JiraQueryAll = config['filter']['ExportJirabugAll']
+blogName = config['url']['Conflunence']
 print(currentdate)
 
 
@@ -67,10 +72,6 @@ def saveXlsxOfBug():
 
 def getBugCsvFile():
     LoginJiraUrl = 'https://jira.blackline.corp/login.jsp'
-    LoginData = {
-        'os_username': config['user']['username'],
-        'os_password': config['user']['password']
-    }
 
     t = jira_request('POST', LoginJiraUrl, data=LoginData)
     if t.status_code == '200':
