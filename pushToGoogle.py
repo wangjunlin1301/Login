@@ -82,8 +82,8 @@ def PushTestcases():
     try:
         Testcasesdf = pd.read_excel(Excelpath + '/Testcase.xlsx', skiprows=1)
         Testcasesdf.style.set_properties(**{'text-align': 'left'})
-        Workspace = sh.worksheet_by_title('DailyIssues')
-        Workspace.set_dataframe(Testcasesdf, (2, 14))
+        Workspace = sh.worksheet_by_title('FailedCase')
+        Workspace.set_dataframe(Testcasesdf, (2, 1))
         print("Test Cases更新成功！")
     except:
         print("something wrong in test cases file")
@@ -108,7 +108,7 @@ def PushDaliyIssues():
 if __name__ == "__main__":
     updateGooglesheet()    
     # 上传日常bug
-    # PushDaliyIssues()
-    # PushTestcases()
+    PushDaliyIssues()
+    PushTestcases()
     # # 更新到GoogleSheets
-    # Upload()
+    Upload()

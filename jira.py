@@ -28,8 +28,6 @@ Regression = config['filter']['RegressionName']
 JiraQuery = config['filter']['ExportJirabug']
 JiraQueryAll = config['filter']['ExportJirabugAll']
 blogName = config['url']['Conflunence']
-print(currentdate)
-
 
 def jira_request(method, url, data=None, info=None):
     if method == "POST":
@@ -43,9 +41,15 @@ def jira_request(method, url, data=None, info=None):
     response.cookies
     return response
 
-
 def saveXlsxOfBug():
+    print(currentdate)
+    #获取bug数据
     getBugCsvFile()
+    # 筛选出新失败的cases
+    Comparecases()
+    # 导出cases
+    ExportTestcases()
+    #保存bug
     try:
         #回归开始以来的bug
         trans1 = pd.read_csv(Csvpath + "/%s.csv" % Regression,
@@ -53,7 +57,6 @@ def saveXlsxOfBug():
         New1 = pd.ExcelWriter(Excelpath + "/%s.xlsx" % Regression)
         trans1.to_excel(New1, index=True)
         New1.save()
-        print("所有的bug保存!")
     except:
         print('SaveXlsxOfBug Wrong!')
     try:
@@ -63,23 +66,18 @@ def saveXlsxOfBug():
         New = pd.ExcelWriter(Excelpath + "/%sdailyissue.xlsx" % filedate)
         trans.to_excel(New, index=True)
         New.save()
-        print("当天bug保存！")
-
     except:
         print("No new bug!")
-    print("文件保存成功！请继续执行pushToGoogle.py！")
-
+    print("Saved success, pushToGoogle.py！")
 
 def getBugCsvFile():
     LoginJiraUrl = 'https://jira.blackline.corp/login.jsp'
 
-    t = jira_request('POST', LoginJiraUrl, data=LoginData)
-    if t.status_code == '200':
-        print('Login Success!')
+    jira_request('POST', LoginJiraUrl, data=LoginData)
 
     # 获取
-    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery= created >= " + currentdate + ' ' + JiraQuery
-    GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=" + JiraQueryAll
+    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery= %s " %JiraQuery
+    GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=%s" %JiraQueryAll
     #GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=+(+labels+=+7.26Regression+OR+'Found in Build'+~+'7.26*'+)+AND+issuetype+in+(+Bug+,+'Internal Bug'+)+AND+created+>=+2020-03-08+AND+status+not+in+(Closed)+AND+labels+not+in+(product.not.for.7.26)"
     result = jira_request("GET", url=GetFileUrl)
     result1 = jira_request("GET", url=GetbugUrlutil)
@@ -91,11 +89,6 @@ def getBugCsvFile():
         for i in result1.iter_content():
             f.write(i)
     print('Daliy Issue Updating!')
-    # 筛选出新失败的cases
-    Comparecases()
-    # 导出cases
-    ExportTestcases()
-
 
 if __name__ == "__main__":
     saveXlsxOfBug()

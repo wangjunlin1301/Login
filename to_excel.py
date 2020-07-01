@@ -21,7 +21,6 @@ Friday_format = Friday.strftime('%Y-%m-%d')
 today = datetime.today()
 today_format = today.strftime('%Y-%m-%d')
 
-
 Csvpath = config['Newpath']['csvpath']
 Excelpath = config['Newpath']['excelpath']
 todayfile = Csvpath + '/' + today_format + 'CaseID.csv'
@@ -46,7 +45,6 @@ def Csv2Excel(csv_name, Excel_name):
     trans.to_excel(New, index=False)
     New.save()
 
-
 def Csv2Excel1():
     filedate = str(time.strftime("%Y-%m-%d"))
     # trans = pd.read_csv("D:\desktop/2020Feb/%sdailyissue.csv"%filedate,usecols = [11,1,0,4,320,20,159])
@@ -56,7 +54,6 @@ def Csv2Excel1():
                          usecols=[1, 11])  # pylint: disable=abstract-class-instantiated
     trans.to_excel(New, index=False)
     New.save()
-
 
 def TestRail_request(method, url, data=None, info=None):
     if method == "POST":
@@ -68,7 +65,6 @@ def TestRail_request(method, url, data=None, info=None):
         response = session.get(url, headers=headers)
     response.encoding = 'utf-8'
     return response
-
 
 def FilterStatus(file, value):
     csv1 = pd.read_csv(file,encoding='utf-8')
@@ -115,7 +111,6 @@ def TodayNewFail():
     except:
         print('The compared file is not existed, please confirm it!')
 
-
 def TestrailLogin():
     #进如Testrail，获取cookies
     TestrailUrl = 'https://titx02.blackline.corp/index.php?/auth/login/'
@@ -132,7 +127,6 @@ def TestrailLogin():
     token = milestone.text
     authToken = re.findall(r'value="(.*?)"', token)[0]
     return authToken
-
 
 def Comparecases():
     authToken = TestrailLogin()
