@@ -22,6 +22,7 @@ def CreateBlog():
         'title':'[TEST UPDATES,%s] %s'%(testDate,blogName),
         'queryString':'spaceKey=QA',
         'spaceKey':'QA',
+        'originalReferrer': 'https://confluence.blackline.corp/pages/viewrecentblogposts.action?key=QA',
         'PostingDate':postingDate,
         'wysiwygContent': postData,
         'atl_token':token
@@ -30,8 +31,8 @@ def CreateBlog():
 
     commitUrl = 'https://confluence.blackline.corp/pages/docreateblogpost.action'
     r3=jira_request('POST',url=commitUrl,data=content)
-    print(r3.status_code)
-    with open('test.html','wb') as f:
-        for i in r3.iter_content():
-            f.write(i)
+    print(r3.request.headers)
+    # with open('test.html','wb') as f:
+    #     for i in r3.request.headers.items:
+    #         f.write(i)
 CreateBlog()
