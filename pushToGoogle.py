@@ -12,9 +12,9 @@ config = ConfigParser()
 config.read('config.ini', encoding='utf-8')
 GoogleName = config['Newpath']['ExcelName']
 
-# # Google Api认证
-# googleauth = pygsheets.authorize(
-#     service_file='./khalil-test-278608-faf5f9854726.json')
+# Google Api认证
+googleauth = pygsheets.authorize(
+    service_file='./khalil-test-278608-faf5f9854726.json')
 
 sheetName = [
     'Accounts', 'CIM', 'Journals', 'Matching', 'Intercompany', 'Tasks',
@@ -26,7 +26,7 @@ sheetName = [
 DaliyIssueFile = Excelpath + "/%s.xlsx" % Regression
 NewIssueFile = Excelpath + "/%sdailyissue.xlsx" % filedate
 #open the google spreadsheet ('pysheeetsTest' exists)
-# sh = googleauth.open(GoogleName)
+sh = googleauth.open(GoogleName)
 
 
 # 遍历上传
@@ -97,8 +97,8 @@ def PushDaliyIssues():
             colsList[0], colsList[1], colsList[2], colsList[3], colsList[7],
             colsList[5], colsList[4], colsList[6]
         ]]
-        # DaliyIssuedf.style.set_properties(**{'text-align': 'left'})
-        # Workspace = sh.worksheet_by_title('DailyIssues')
+        DaliyIssuedf.style.set_properties(**{'text-align': 'left'})
+        Workspace = sh.worksheet_by_title('DailyIssues')
 
         # new issue
         newIssueDf = pd.read_excel(NewIssueFile,index_col=0,skiprows=1)
@@ -106,21 +106,18 @@ def PushDaliyIssues():
         newIssueDf = newIssueDf[[
                     colsList1[0],colsList1[1],colsList1[2],colsList1[3],colsList1[5],colsList1[4]
             ]]
-        print(newIssueDf)
-        # newIssueDf.style.set_properties(**{'text-align':'left'})
-        # Workspace.set_dataframe(newIssueDf,(2,14))
-        # Workspace.set_dataframe(DaliyIssuedf, (2, 2))
-
+        newIssueDf.style.set_properties(**{'text-align':'left'})
+        Workspace.set_dataframe(newIssueDf,(2,14))
+        Workspace.set_dataframe(DaliyIssuedf, (2, 2))
         print("Push Done")
     except:
         print('表格错误！')
 
-PushDaliyIssues()
-# if __name__ == "__main__":
+
+if __name__ == "__main__":
     # updateGooglesheet()    
-    # # 上传日常bug
-    # PushDaliyIssues()
+    # 上传日常bug
+    PushDaliyIssues()
     # PushTestcases()
-    # # # 更新到GoogleSheets
+    # # 更新到GoogleSheets
     # Upload()
-    

@@ -2,7 +2,6 @@
 import requests
 import time
 import pandas as pd
-# from login import to_excel
 from configparser import ConfigParser
 from to_excel import Comparecases, ExportTestcases
 
