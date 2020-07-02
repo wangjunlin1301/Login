@@ -121,7 +121,7 @@ def getTicketnumber():
                 CPRNumber +=1
             elif 'Ready for Dev' in h:
                 CreadyDevNumber +=1
-            elif  'Product Accepted' in h:
+            elif  'In Product Acceptance' in h:
                 CPANumber +=1
 
     CurrentFixVersion = {
@@ -130,8 +130,8 @@ def getTicketnumber():
         'ReadyDev':CreadyDevNumber,
         'InDev':CinDevNumber,
         'InQA':CinQaNumber,
+        'PA':CPANumber,
         'Closed':CclosedNumber,
-        'PA':CPANumber
     }
     NoFixVersion = {
         'New':newNumber,
@@ -139,7 +139,7 @@ def getTicketnumber():
         'ReadyDev':readyDevNumber,
         'InDev':inDevNumber,
         'InQA':inQaNumber,
-        'Closed':closedNumber,
-        'PA':PANumber
+        'PA':PANumber,
+        'Closed':closedNumber
     }
     return CurrentFixVersion,NoFixVersion

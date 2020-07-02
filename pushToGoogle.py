@@ -115,9 +115,9 @@ def PushDaliyIssues():
 
 
 if __name__ == "__main__":
-    # updateGooglesheet()    
+    updateGooglesheet()    
     # 上传日常bug
     PushDaliyIssues()
-    # PushTestcases()
+    PushTestcases()
     # # 更新到GoogleSheets
-    # Upload()
+    Upload()
