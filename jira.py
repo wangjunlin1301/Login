@@ -15,8 +15,8 @@ session = requests.session()
 session.keep_alive = False
 requests.urllib3.disable_warnings()
 LoginData = {
-        'os_username': config['user']['username'],
-        'os_password': config['user']['password']
+    'os_username': config['user']['username'],
+    'os_password': config['user']['password']
 }
 
 currentdate = str(time.strftime("%Y-%m-%d"))
@@ -28,7 +28,8 @@ JiraQuery = config['filter']['ExportJirabug']
 JiraQueryAll = config['filter']['ExportJirabugAll']
 blogName = config['url']['Conflunence']
 
-def jira_request(method, url, data=None, info=None):
+
+def jira_request(method, url, data=None, info=None, headers=None):
     if method == "POST":
         response = session.post(url=url,
                                 data=data,
@@ -39,6 +40,7 @@ def jira_request(method, url, data=None, info=None):
     response.encoding = 'utf-8'
     response.cookies
     return response
+
 
 def saveXlsxOfBug():
     print(currentdate)
@@ -69,14 +71,15 @@ def saveXlsxOfBug():
         print("No new bug!")
     print("Saved success, pushToGoogle.py！")
 
+
 def getBugCsvFile():
     LoginJiraUrl = 'https://jira.blackline.corp/login.jsp'
 
     jira_request('POST', LoginJiraUrl, data=LoginData)
 
     # 获取
-    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery= %s " %JiraQuery
-    GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=%s" %JiraQueryAll
+    GetFileUrl = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery= %s " % JiraQuery
+    GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=%s" % JiraQueryAll
     #GetbugUrlutil = "https://jira.blackline.corp/sr/jira.issueviews:searchrequest-csv-current-fields/temp/SearchRequest.csv?jqlQuery=+(+labels+=+7.26Regression+OR+'Found in Build'+~+'7.26*'+)+AND+issuetype+in+(+Bug+,+'Internal Bug'+)+AND+created+>=+2020-03-08+AND+status+not+in+(Closed)+AND+labels+not+in+(product.not.for.7.26)"
     result = jira_request("GET", url=GetFileUrl)
     result1 = jira_request("GET", url=GetbugUrlutil)
@@ -88,6 +91,7 @@ def getBugCsvFile():
         for i in result1.iter_content():
             f.write(i)
     print('Daliy Issue Updating!')
+
 
 if __name__ == "__main__":
     saveXlsxOfBug()

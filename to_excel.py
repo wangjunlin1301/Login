@@ -45,6 +45,7 @@ def Csv2Excel(csv_name, Excel_name):
     trans.to_excel(New, index=False)
     New.save()
 
+
 def Csv2Excel1():
     filedate = str(time.strftime("%Y-%m-%d"))
     # trans = pd.read_csv("D:\desktop/2020Feb/%sdailyissue.csv"%filedate,usecols = [11,1,0,4,320,20,159])
@@ -54,6 +55,7 @@ def Csv2Excel1():
                          usecols=[1, 11])  # pylint: disable=abstract-class-instantiated
     trans.to_excel(New, index=False)
     New.save()
+
 
 def TestRail_request(method, url, data=None, info=None):
     if method == "POST":
@@ -66,9 +68,11 @@ def TestRail_request(method, url, data=None, info=None):
     response.encoding = 'utf-8'
     return response
 
+
 def FilterStatus(file, value):
-    csv1 = pd.read_csv(file,encoding='utf-8')
-    return  csv1[csv1['Status']==value]
+    csv1 = pd.read_csv(file, encoding='utf-8')
+    return csv1[csv1['Status'] == value]
+
 
 def TodayNewFail():
     todaydata = FilterStatus(todayfile, 'Failed')
@@ -76,24 +80,25 @@ def TodayNewFail():
     try:
         if os.path.exists(yesterdayfile):
             yesterdaydata = FilterStatus(yesterdayfile, 'Failed')
-            print('和昨天的比较')
+            print('Yesterday')
         elif os.path.exists(Stadayfile):
             yesterdaydata = FilterStatus(Stadayfile, 'Failed')
-            print('和前天的比较')
+            print('a day before Yesterday')
         elif os.path.exists(Fridayfile):
             yesterdaydata = FilterStatus(Fridayfile, 'Failed')
-            print('和大前天比较')
+            print('two days before Yesterday')
         elif os.path.exists(Thrusdayfile):
-            yesterdaydata = FilterStatus(Thrusdayfile,'Failed')
-            print('和前前天比较')
+            yesterdaydata = FilterStatus(Thrusdayfile, 'Failed')
+            print('Today')
         else:
             yesterdaydata = todaydata
             print('没有可比较的文件，只筛选失败的cases')
-        FinalData = pd.merge(yesterdaydata,
-                             todaydata,
-                             on=['ID', 'Case ID', 'Defects', 'Status','Tested On'],
-                             how='right',
-                             indicator='Yes')
+        FinalData = pd.merge(
+            yesterdaydata,
+            todaydata,
+            on=['ID', 'Case ID', 'Defects', 'Status', 'Tested On'],
+            how='right',
+            indicator='Yes')
         FinalData.Yes = FinalData.Yes.cat.set_categories(
             ['No', 'Yes', 'right_only', 'both'])
         j = 0
@@ -104,12 +109,13 @@ def TodayNewFail():
                 FinalData.at[j, 'Yes'] = 'No'
             j += 1
         Excel = pd.ExcelWriter("%s/Testcase.xlsx" % Excelpath)
-        FinalData.index = FinalData.index+1
+        FinalData.index = FinalData.index + 1
         FinalData.to_excel(Excel, index=True)
         Excel.save()
         print("Testcases saved in " + Excelpath)
     except:
         print('The compared file is not existed, please confirm it!')
+
 
 def TestrailLogin():
     #进如Testrail，获取cookies
@@ -128,6 +134,7 @@ def TestrailLogin():
     authToken = re.findall(r'value="(.*?)"', token)[0]
     return authToken
 
+
 def Comparecases():
     authToken = TestrailLogin()
     # 导出文件 以及需要的数据
@@ -145,12 +152,13 @@ def Comparecases():
     print("Testcases Downloading!")
 
     #写数据
-    with open(Csvpath+"/%sCaseID.csv" % today_format, 'wb') as f:
+    with open(Csvpath + "/%sCaseID.csv" % today_format, 'wb') as f:
         for i in export.iter_content():
             f.write(i)
 
     # #转换以及清洗数据
     TodayNewFail()
+
 
 def ExportTestcases():
     #进如Testrail，获取token
